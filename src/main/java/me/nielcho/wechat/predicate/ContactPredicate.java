@@ -1,17 +1,15 @@
 package me.nielcho.wechat.predicate;
 
+import me.nielcho.wechat.constants.WeChatConstants;
 import me.nielcho.wechat.response.GetContactResponse;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-/**
- * Created by drjr on 17-11-23.
- */
 public class ContactPredicate implements Predicate<GetContactResponse> {
 
-    private static final List<String> ACCEPTED_SPECIAL_USERNAME = Collections.singletonList("filehelper");
+    private static final List<String> ACCEPTED_SPECIAL_USERNAME = Collections.singletonList(WeChatConstants.WX_FILEHELPER);
     private static final String GROUP_CONTACT_PREFIX = "@@";
 
     private static final ContactPredicate INSTANCE = new ContactPredicate();

@@ -133,6 +133,10 @@ public class WeChatSession implements Runnable {
                     case "201":
                         info("用户已扫码");
                         context.setTip(SCANNED);
+                        List<String> avatar = match(USER_AVATAR_PATTERN, result);
+                        if (CollectionUtils.isNotEmpty(avatar)) {
+                            context.setAvatar(avatar.get(0));
+                        }
                         break;
                     case "200":
                         info("用户已确认登录");

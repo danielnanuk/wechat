@@ -2,9 +2,6 @@ package me.nielcho.wechat.constants;
 
 import java.util.regex.Pattern;
 
-/**
- * Created by drjr on 17-11-23.
- */
 public class WeChatConstants {
 
     public static final int SESSION_STATE_LOGGING = 1;
@@ -14,7 +11,7 @@ public class WeChatConstants {
     public static final Pattern SYNC_CHECK_PATTERN = Pattern.compile("window.synccheck=\\{retcode:\"(\\d+)\",selector:\"(\\d+)\"}");
     public static final Pattern LOGIN_CODE_PATTERN = Pattern.compile("window.code=(\\d+);");
     public static final Pattern LOGIN_REDIRECT_PATTERN = Pattern.compile("window.redirect_uri=\"(\\S+?)\"");
-    private static final Pattern USER_AVATAR_PATTERN = Pattern.compile("window.userAvatar = '(\\S+?)'");
+    public static final Pattern USER_AVATAR_PATTERN = Pattern.compile("window.userAvatar = '(\\S+?)'");
     public static final String WX_FILEHELPER = "filehelper";
 
     public static final String WX_GET_GROUP_ICON = "/cgi-bin/mmwebwx-bin/webwxgetheadimg";
