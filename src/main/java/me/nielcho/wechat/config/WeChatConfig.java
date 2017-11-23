@@ -20,16 +20,10 @@ public class WeChatConfig {
     @Bean
     public ThreadPoolTaskExecutor weChatSessionExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        ;
-        // 线程池所使用的缓冲队列
         executor.setQueueCapacity(0);
-        // 线程池维护线程的最少数量
         executor.setCorePoolSize(5);
-        // 线程池维护线程的最大数量
         executor.setMaxPoolSize(500);
         executor.setThreadNamePrefix("WeChat");
-
-        // 线程池维护线程所允许的空闲时间
         executor.setKeepAliveSeconds(10000);
         executor.initialize();
         return executor;
