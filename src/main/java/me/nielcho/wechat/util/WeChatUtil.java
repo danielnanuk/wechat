@@ -1,17 +1,22 @@
 package me.nielcho.wechat.util;
 
+
+import org.apache.commons.collections.MapUtils;
+import org.springframework.util.StringUtils;
+
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WeChatUtil {
 
     private static char[] DIGITS = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
     /**
-     * 生成16位设备id
-     *
-     * @return 16位微信设备码
+     * 生成16位微信设备码
+     * 如: e729304849102334, 数字首位不为0
      */
     public static String generateDeviceID() {
         Random random = new Random();
@@ -22,16 +27,9 @@ public class WeChatUtil {
             i++;
             builder.append(DIGITS[random.nextInt(10)]);
         }
-
         return "e" + builder.toString();
     }
 
-    /**
-     * 用数字生成随机字符串,可以0开始
-     *
-     * @param length 随机字符串长度
-     * @return 随机字符串
-     */
     public static String getRandomNumber(int length) {
         StringBuilder builder = new StringBuilder();
         int i = 0;
@@ -43,78 +41,87 @@ public class WeChatUtil {
     }
 
     /**
-     * unicode to utf8
-     *
-     * @param string string may contains unicode
-     * @return converted string
+     * 生成本地消息ID
      */
-    public static String unicodeToUtf8(String string) {
-        try {
-            if (!string.contains("\\u")) {
-                return string;
-            }
-            byte[] utf8 = string.getBytes("UTF-8");
-            string = new String(utf8, "UTF-8");
-            return string;
-        } catch (UnsupportedEncodingException e) {
-            // unreachable
-        }
-        return string;
-    }
-
     public static String generateClientMsgId() {
-        return System.currentTimeMillis() / 1000 + "" + WeChatUtil.getRandomNumber(4);
+        return System.currentTimeMillis() / 1000 + "" + getRandomNumber(4);
     }
 
+    /**
+     * 生成本地媒体ID
+     */
     public static long generateClientMediaId() {
         return (System.currentTimeMillis() / 1000) * 1000 + new Random().nextInt(10000);
     }
 
+    /**
+     * 获取文件后缀名
+     */
     public static String getFileExt(String filename) {
         int dotIndex = filename.lastIndexOf('.');
         return dotIndex > 0 ? filename.substring(dotIndex) : "";
-    }
-
-    private static final List<String> USER_AGENTS = Arrays.asList("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393",
-            "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)",
-            "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/5.0;  Trident/5.0)",
-            "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0; MDDCJS)",
-            "Mozilla/5.0 (compatible, MSIE 11, Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko");
-
-    public static String getRandomUserAgent() {
-        return USER_AGENTS.get(ThreadLocalRandom.current().nextInt(USER_AGENTS.size()));
     }
 
     public static double getPGVPVI() {
         return (Math.round(Integer.MAX_VALUE * Math.random()) * (double) System.currentTimeMillis()) % 10000000000.;
     }
 
-    @SuppressWarnings("unchecked")
     public static Map<String, String> getQueryString(String url) {
         if (!url.contains("?")) {
             return Collections.emptyMap();
         }
-
         int idx = url.indexOf("?");
         String param = url.substring(idx + 1);
         String[] keyValuePair = param.split("&");
         Map<String, String> map = new HashMap<>();
         for (String kv : keyValuePair) {
-            int equalIdx = kv.indexOf("=");
-            if (equalIdx == kv.length() - 1) {
-                map.put(kv.substring(0, equalIdx), null);
-            } else {
-                map.put(kv.substring(0, equalIdx), kv.substring(equalIdx + 1));
+            int equalIdx =  kv.indexOf("=");
+            if (equalIdx != kv.length() - 1) {
+                map.put(kv.substring(0,equalIdx), kv.substring(equalIdx+1));
             }
         }
         return map;
     }
 
-    public static long invertLong(long n) {
-        return ((~(int)(n >> 8)) << 8) & ~(int)(n);
+    public static List<String> match(Pattern pattern, String input) {
+        if (StringUtils.isEmpty(input)) return Collections.emptyList();
+        Matcher matcher = pattern.matcher(input);
+        List<String> result = new ArrayList<>();
+        while (matcher.find()) {
+            for (int i = 0; i < matcher.groupCount(); i++) {
+                result.add(matcher.group(i + 1));
+            }
+        }
+        return result;
+    }
+
+    public static String format(String url, Object... pathVariables) {
+        Object[] params = new Object[pathVariables.length];
+        for (int i = 0; i < params.length; i++) {
+            try {
+                params[i] = URLEncoder.encode(String.valueOf(pathVariables[i]), "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        return String.format(url, params);
+    }
+
+    public static String format(String url, Map<String, ?> params) {
+        StringBuilder builder = new StringBuilder(url);
+        builder.append("?");
+        params.forEach((k, v) -> {
+            try {
+                builder.append(k).append("=").append(URLEncoder.encode(String.valueOf(v), "utf-8")).append("&");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        });
+        return builder.toString();
     }
 
 
+    public static long invertLong(long n) {
+        return ((~(int)(n >> 8)) << 8) & ~(int)(n);
+    }
 }

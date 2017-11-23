@@ -1,13 +1,13 @@
 package me.nielcho.wechat.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 @Data
 public class GetBatchUserName {
-    @JsonProperty("UserName")
+    @JSONField(name = "UserName")
     String UserName;
-    @JsonProperty("EncryChatRoomId")
+    @JSONField(name = "EncryChatRoomId")
     String EncryChatRoomId;
     
     

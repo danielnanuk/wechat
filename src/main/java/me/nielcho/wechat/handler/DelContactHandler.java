@@ -14,7 +14,6 @@ import java.util.function.BiConsumer;
 @Slf4j
 public class DelContactHandler implements BiConsumer<WeChatContext, DelContact> {
 
-
     @Autowired
     private ContactRepository contactRepository;
 

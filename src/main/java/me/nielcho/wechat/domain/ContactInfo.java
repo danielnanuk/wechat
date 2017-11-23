@@ -1,6 +1,5 @@
 package me.nielcho.wechat.domain;
 
-
 import lombok.Data;
 import me.nielcho.wechat.constants.WeChatConstants;
 import me.nielcho.wechat.context.WeChatContext;
@@ -8,7 +7,6 @@ import me.nielcho.wechat.predicate.ContactPredicate;
 import me.nielcho.wechat.response.GetContactResponse;
 import me.nielcho.wechat.response.Member;
 import me.nielcho.wechat.response.ModContact;
-import me.nielcho.wechat.util.URLUtils;
 import me.nielcho.wechat.util.WeChatUtil;
 import org.springframework.util.StringUtils;
 
@@ -21,6 +19,7 @@ import java.util.Objects;
 @Data
 public class ContactInfo {
     String username;
+    String aid;
     String nickname;
     String remarkName;
     String chatroomId;
@@ -34,6 +33,10 @@ public class ContactInfo {
         return ContactPredicate.isGroupContact(username);
     }
 
+    @Transient
+    public String getVid() {
+        return nickname + "#" + (StringUtils.isEmpty(remarkName) ? "" : remarkName);
+    }
     private static void processEmptySkey(String skey, ContactInfo contactInfo) {
         String icon = contactInfo.getIcon();
         Map<String, String> queryString = WeChatUtil.getQueryString(icon);
@@ -101,7 +104,7 @@ public class ContactInfo {
         params.put("username", member.getUserName());
         params.put("skey", context.getSkey());
         params.put("chatroomid", encryChatRoomId);
-        String icon = URLUtils.format(WeChatConstants.WX_GET_ICON, params);
+        String icon = WeChatUtil.format(WeChatConstants.WX_GET_ICON, params);
         contactInfo.setIcon(icon);
         processGroup(contactInfo, getContactResponse.getMemberList());
         return contactInfo;
@@ -113,6 +116,7 @@ public class ContactInfo {
         ContactInfo another = (ContactInfo) object;
         return Objects.equals(this.getUsername(), another.getUsername())
                 && Objects.equals(this.getNickname(), another.getNickname())
-                && Objects.equals(this.getRemarkName(), another.getRemarkName());
+                && Objects.equals(this.getRemarkName(), another.getRemarkName())
+                && Objects.equals(this.getAid(), another.getAid());
     }
 }

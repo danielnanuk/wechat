@@ -1,6 +1,6 @@
 package me.nielcho.wechat.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.ToString;
 
@@ -10,9 +10,9 @@ import java.util.List;
 @Data
 @ToString(callSuper = true)
 public class GetBatchContactResponse extends BaseWxResponse {
-    @JsonProperty("ContactList")
+    @JSONField(name = "ContactList")
     List<GetContactResponse> ContactList;
-    @JsonProperty("Count")
+    @JSONField(name = "Count")
     int Count;
     
 }

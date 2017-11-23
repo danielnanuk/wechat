@@ -1,17 +1,21 @@
 package me.nielcho.wechat.handler;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import me.nielcho.wechat.constants.WeChatConstants;
 import me.nielcho.wechat.context.WeChatContext;
 import me.nielcho.wechat.domain.WeChatMessage;
 import me.nielcho.wechat.response.MessageResponse;
-import me.nielcho.wechat.util.JsonUtil;
+import org.springframework.stereotype.Component;
 
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-
+@Component
+@Slf4j
 public class CardMessageHandler extends MessageHandler {
 
     private static final Pattern HEAD_IMG_PATTERN = Pattern.compile("smallheadimgurl=\"(\\S+?)\"");
@@ -35,7 +39,8 @@ public class CardMessageHandler extends MessageHandler {
         content.put("icon", headImg);
         content.put("wxNo", wxNo);
         content.put("nickname", nickname);
-        weChatMessage.setContent(JsonUtil.toJsonString(content));
+        weChatMessage.setContent(JSON.toJSONString(content));
+        log.info("");
     }
     
     

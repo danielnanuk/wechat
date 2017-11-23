@@ -1,29 +1,25 @@
 package me.nielcho.wechat.context;
 
 import lombok.Data;
-import me.nielcho.wechat.constants.WeChatConstants;
 import me.nielcho.wechat.request.BaseRequest;
 import me.nielcho.wechat.response.SyncKey;
-import me.nielcho.wechat.response.WeChatUserResponse;
+import me.nielcho.wechat.response.UserResponse;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Data
 public class WeChatContext {
-
-    // 会话id
-    private String sessionId;
-
-    // 是否已扫码
+    private final String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
+    private final Map<String, String> cookies = new HashMap<>();
+    private String id;
+    private String domain;
+    private String host;
     private String tip;
-
-    // 当次登录微信标示
     private String uuid;
-
     private String skey;
-
+    private String fileDomain;
     private String sid;
 
     private String passTicket;
@@ -31,53 +27,12 @@ public class WeChatContext {
     private String uin;
 
     private String deviceId;
-
-    private Map<String, String> cookies = new HashMap<>();
-
-    private SyncKey syncKey;
-
-    private WeChatUserResponse user;
-
-    private BaseRequest baseRequest;
-
-    private String state;
-
     private String avatar;
-
-    private String domain;
-
     private String pushDomain;
 
-    private String fileDomain;
-
-    // 该上下文在redis中最后刷新时间
-    private Long lastRefreshTime;
-
-    private String userAgent;
-
-    private String host;
-
-    private Integer employeeId;
-
-    private String employeeName;
-
-    private String message;
-
-    /**
-     * 以下属性与业务无关, 为模拟微信埋点属性
-     */
-    private Long qrcodeStart;
-    private Long qrcodeEnd;
-    private Long scan;
-    private Long loginEnd;
-    private Long initStart;
-    private Long initEnd;
-    private Long initContactStart;
-
-    private int logoutCode;
-
-    public static boolean isLogin(WeChatContext context) {
-        return context != null && WeChatConstants.CONTEXT_STATE_LOGINED.equals(context.getState());
-    }
-
+    private BaseRequest baseRequest;
+    private UserResponse user;
+    private SyncKey syncKey;
+    private int state;
+    private AtomicInteger mediaCount;
 }

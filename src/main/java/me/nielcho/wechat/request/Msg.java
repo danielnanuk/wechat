@@ -1,6 +1,6 @@
 package me.nielcho.wechat.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import me.nielcho.wechat.constants.WeChatConstants;
@@ -10,19 +10,19 @@ import me.nielcho.wechat.util.WeChatUtil;
 @Data
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class Msg {
-    @JsonProperty("Type")
+    @JSONField(name = "Type")
     int Type;
-    @JsonProperty("FromUserName")
+    @JSONField(name = "FromUserName")
     String FromUserName;
-    @JsonProperty("ToUserName")
+    @JSONField(name = "ToUserName")
     String ToUserName;
-    @JsonProperty("LocalID")
+    @JSONField(name = "LocalID")
     String LocalID;
-    @JsonProperty("Content")
+    @JSONField(name = "Content")
     String Content = "";
-    @JsonProperty("ClientMsgId")
+    @JSONField(name = "ClientMsgId")
     String ClientMsgId;
-    @JsonProperty("MediaId")
+    @JSONField(name = "MediaId")
     String MediaId;
     
     public static Msg newTextMsg(WeChatContext context, String to, String content) {

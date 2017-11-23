@@ -4,7 +4,7 @@ package me.nielcho.wechat.response;
 import lombok.Data;
 
 @Data
-public class WeChatUserResponse {
+public class UserResponse {
     private int AppAccountFlag;
     private int ContactFlag;
     private int HeadImgFlag;

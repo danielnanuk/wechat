@@ -1,5 +1,7 @@
 package me.nielcho.wechat.util;
 
+
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.springframework.util.CollectionUtils;
@@ -61,10 +63,10 @@ public class OkHttp {
                 log.warn("null response for {}:{}" + request.method(), request.url());
                 return null;
             }
-            return JsonUtil.parseJson(result, clazz);
-        } catch (Exception e) {
+            return JSON.parseObject(result, clazz);
+        }catch (Exception e) {
             log.error("error parse json:" + result, e);
-            throw e;
+            throw  e;
         }
     }
 }

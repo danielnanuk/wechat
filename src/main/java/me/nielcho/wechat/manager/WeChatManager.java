@@ -1,52 +1,50 @@
 package me.nielcho.wechat.manager;
 
-import me.nielcho.wechat.context.WeChatContext;
 import me.nielcho.wechat.session.WeChatSession;
-import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 public class WeChatManager {
 
-    private static ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
-    private static String WX_REQUEST_CONST = "WX_REQ_KEY";
+    @Autowired
+    private ApplicationContext applicationContext;
 
-    @Resource(name = "weChatSessionExecutor")
     public void setThreadPoolTaskExecutor(ThreadPoolTaskExecutor threadPoolTaskExecutor) {
-        WeChatManager.threadPoolTaskExecutor = threadPoolTaskExecutor;
+        this.threadPoolTaskExecutor = threadPoolTaskExecutor;
     }
 
-    private static Map<String, WeChatSession> SESSION_MAP = new ConcurrentHashMap<>();
-    private static Map<String, WeChatContext> CONTEXT_MAP = new ConcurrentHashMap<>();
-
-
-    private static HttpServletRequest getRequest() {
-        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+    private ConcurrentHashMap<String, WeChatSession> sessionMap = new ConcurrentHashMap<>();
+    public WeChatSession createSession(String id) {
+        WeChatSession session = new WeChatSession(id);
+        session.startLogin();
+        String uuid = session.getUUID();
+        if (StringUtils.isEmpty(uuid)) {
+            return null;
+        } else {
+            sessionMap.put(id, session);
+            initializeBean(session);
+            applicationContext.getAutowireCapableBeanFactory();
+            threadPoolTaskExecutor.submit(session);
+            return session;
+        }
     }
 
-
-    public static WeChatSession getWeChatSession(String id) {
-        return SESSION_MAP.get(id);
+    private void initializeBean(Object bean) {
+        AutowireCapableBeanFactory beanFactory = applicationContext.getAutowireCapableBeanFactory();
+        beanFactory.autowireBean(bean);
+        beanFactory.initializeBean(bean, bean.getClass().getName());
+    }
+    public WeChatSession getSession(String id) {
+        return sessionMap.get(id);
     }
 
-    public static WeChatContext getWeChatContext(String id) {
-        return CONTEXT_MAP.get(id);
-    }
-
-    public static WeChatContext getContext() {
-        HttpServletRequest request = getRequest();
-        return getWeChatContext(String.valueOf(request.getSession().getAttribute(WX_REQUEST_CONST)));
-
-
-    }
 
 }

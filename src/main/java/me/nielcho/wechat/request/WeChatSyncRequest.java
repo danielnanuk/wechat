@@ -1,16 +1,16 @@
 package me.nielcho.wechat.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import me.nielcho.wechat.response.SyncKey;
 
 @Data
 public class WeChatSyncRequest {
-    @JsonProperty("BaseRequest")
+    @JSONField(name = "BaseRequest")
     BaseRequest baseRequest;
-    @JsonProperty("SyncKey")
+    @JSONField(name = "SyncKey")
     SyncKey syncKey;
-    @JsonProperty("rr")
+    @JSONField(name = "rr")
     long rr;
     
     

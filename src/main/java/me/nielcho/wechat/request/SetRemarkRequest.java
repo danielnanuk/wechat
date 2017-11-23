@@ -1,19 +1,19 @@
 package me.nielcho.wechat.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import me.nielcho.wechat.context.WeChatContext;
 
 @Data
 public class SetRemarkRequest {
     
-    @JsonProperty("BaseRequest")
+    @JSONField(name = "BaseRequest")
     BaseRequest BaseRequest;
-    @JsonProperty("UserName")
+    @JSONField(name = "UserName")
     String UserName;
-    @JsonProperty("RemarkName")
+    @JSONField(name = "RemarkName")
     String RemarkName;
-    @JsonProperty("CmdId")
+    @JSONField(name = "CmdId")
     int CmdId = 2;
     
     

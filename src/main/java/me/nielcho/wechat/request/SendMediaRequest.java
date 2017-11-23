@@ -1,14 +1,14 @@
 package me.nielcho.wechat.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 @Data
 public class SendMediaRequest {
-    @JsonProperty("BaseRequest")
+    @JSONField(name = "BaseRequest")
     BaseRequest BaseRequest;
-    @JsonProperty("Msg")
+    @JSONField(name = "Msg")
     Msg Msg;
-    @JsonProperty("Scene")
+    @JSONField(name = "Scene")
     Integer Scene;
 }

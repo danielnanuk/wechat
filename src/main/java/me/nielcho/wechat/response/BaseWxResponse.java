@@ -1,11 +1,11 @@
 package me.nielcho.wechat.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 @Data
 public class BaseWxResponse {
-    @JsonProperty("BaseResponse")
+    @JSONField(name = "BaseResponse")
     private BaseResponse BaseResponse;
     
     public boolean isSuccess() {

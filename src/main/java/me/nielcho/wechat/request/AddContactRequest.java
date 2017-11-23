@@ -1,26 +1,26 @@
 package me.nielcho.wechat.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 public class AddContactRequest {
-    @JsonProperty("BaseRequest")
+    @JSONField(name = "BaseRequest")
     BaseRequest BaseRequest;
-    @JsonProperty("Opcode")
+    @JSONField(name = "Opcode")
     int Opcode;
-    @JsonProperty("SceneList")
+    @JSONField(name = "SceneList")
     List<Integer> SceneList;
-    @JsonProperty("SceneListCount")
+    @JSONField(name = "SceneListCount")
     int SceneListCount;
-    @JsonProperty( "VerifyContent")
+    @JSONField(name =  "VerifyContent")
     String VerifyContent;
-    @JsonProperty("VerifyUserListSize")
+    @JSONField(name = "VerifyUserListSize")
     int VerifyUserListSize;
-    @JsonProperty("VerifyUserList")
+    @JSONField(name = "VerifyUserList")
     List<VerifyUserRequest> VerifyUserList;
-    @JsonProperty("skey")
+    @JSONField(name = "skey")
     String skey;
 }

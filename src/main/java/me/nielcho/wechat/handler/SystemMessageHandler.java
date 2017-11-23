@@ -27,14 +27,14 @@ public class SystemMessageHandler extends MessageHandler {
     WeChatMessage fromMessageResponse(WeChatContext context, MessageResponse response) {
         WeChatMessage weChatMessage = new WeChatMessage();
         setBasicInfo(response, weChatMessage);
-        ContactInfo fromUser = weChatService.getContactInfo(context, response.getFromUserName(), true);
+        ContactInfo fromUser = contactRepository.getContact(context.getUin(), response.getFromUserName());
         if (fromUser == null) {
-            log.info("[*] |{}|{}|:未知系统消息:{}", context.getEmployeeId(), context.getUuid(), response);
+            log.info("[*] |{}|{}|:未知系统消息:{}", context.getId(), context.getUuid(), response);
             return null;
         }
-        ContactInfo toUser = weChatService.getContactInfo(context, response.getToUserName(), true);
+        ContactInfo toUser = contactRepository.getContact(context.getUin(), response.getToUserName());
         if (toUser == null) {
-            log.info("[*] |{}|{}|:未知系统消息:{}", context.getEmployeeId(), context.getUuid(), response);
+            log.info("[*] |{}|{}|:未知系统消息:{}", context.getId(), context.getUuid(), response);
             return null;
         }
         boolean groupMessage = fromUser.isGroup() || toUser.isGroup();

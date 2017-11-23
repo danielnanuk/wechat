@@ -1,24 +1,24 @@
 package me.nielcho.wechat.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 @Data
 public class UploadMediaRequest {
-    @JsonProperty("BaseRequest")
+    @JSONField(name = "BaseRequest")
     BaseRequest BaseRequest;
-    @JsonProperty("ClientMediaId")
+    @JSONField(name = "ClientMediaId")
     long ClientMediaId;
-    @JsonProperty("TotalLen")
+    @JSONField(name = "TotalLen")
     long TotalLen;
-    @JsonProperty("StartPos")
+    @JSONField(name = "StartPos")
     int StartPos;
-    @JsonProperty("DataLen")
+    @JSONField(name = "DataLen")
     long DataLen;
-    @JsonProperty("MediaType")
+    @JSONField(name = "MediaType")
     int MediaType;
-    @JsonProperty("UploadType")
+    @JSONField(name = "UploadType")
     int UploadType;
-    @JsonProperty("FileMd5")
+    @JSONField(name = "FileMd5")
     String FileMd5;
 }

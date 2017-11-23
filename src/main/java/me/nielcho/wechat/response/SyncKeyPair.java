@@ -1,12 +1,12 @@
 package me.nielcho.wechat.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 @Data
 public class SyncKeyPair {
-    @JsonProperty("Key")
+    @JSONField(name = "Key")
     int Key;
-    @JsonProperty("Val")
+    @JSONField(name = "Val")
     int Val;
 }

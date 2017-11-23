@@ -6,27 +6,21 @@ import me.nielcho.wechat.context.WeChatContext;
 import me.nielcho.wechat.domain.ContactInfo;
 import me.nielcho.wechat.domain.WeChatMessage;
 import me.nielcho.wechat.repository.ContactRepository;
-import me.nielcho.wechat.repository.MessageRepository;
 import me.nielcho.wechat.response.MessageResponse;
-import me.nielcho.wechat.service.WeChatService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+@Component
 @Slf4j
 public abstract class MessageHandler {
 
-    @Resource
-    WeChatService weChatService;
-
-    @Resource
-    MessageRepository messageRepository;
-
-    @Resource
-    ContactRepository contactRepository;
+    @Autowired
+    protected ContactRepository contactRepository;
 
     public abstract WeChatConstants.MessageType getSupportedType();
 
@@ -37,6 +31,7 @@ public abstract class MessageHandler {
     public void handle(WeChatContext context, MessageResponse message) {
         WeChatMessage weChatMessage = fromMessageResponse(context, message);
         if (weChatMessage != null) {
+            log(context, weChatMessage);
             handleInternal(context, message, weChatMessage);
         }
     }
@@ -51,13 +46,13 @@ public abstract class MessageHandler {
         String toUserName = response.getToUserName();
         ContactInfo toUser = contactRepository.getContact(context.getUin(), toUserName);
         if (toUser == null) {
-            log.info("[*] |{}|{}|:发送公众号消息:{}", context.getEmployeeId(), context.getUuid(), response);
+            log.info("[*] |{}|{}|:发送公众号消息:{}", context.getId(), context.getUuid(), response);
             return null;
         }
         String fromUserName = response.getFromUserName();
         ContactInfo fromUser = contactRepository.getContact(context.getUin(), fromUserName);
         if (fromUser == null) {
-            log.info("[*] |{}|{}|:收到公众号消息:{}", context.getEmployeeId(), context.getUuid(), response);
+            log.info("[*] |{}|{}|:收到公众号消息:{}", context.getId(), context.getUuid(), response);
             return null;
         }
         boolean isSend = Objects.equals(fromUserName, context.getUser().getUserName());
@@ -102,11 +97,11 @@ public abstract class MessageHandler {
         weChatMessage.setMediaId(response.getMediaId());
     }
 
-    private void log(WeChatContext context, WeChatMessage message) {
+    protected void log(WeChatContext context, WeChatMessage message) {
         if (message.isGroupMessage() && message.getDirection() == WeChatConstants.MessageDirection.RECEIVE) {
-            log.info("[x] {}: 新消息 => {}: {}|{} -> {}", context.getEmployeeId(), getSupportedType().getName(), message.getFromGroup(), message.getFromUser(), message.getToUser());
+            log.info("[*] |{}|{}|:{}群{}消息 => {}: {}|{} -> {}", context.getId(), context.getUuid(), message.getDirection().getDesc(), getSupportedType().getName(), message.getFromGroup(), message.getFromUser(), message.getToUser());
         } else {
-            log.info("[x] {}: 新消息 => {}: {} -> {}", context.getEmployeeId(), getSupportedType().getName(), message.getFromUser(), message.getToUser());
+            log.info("[*] |{}|{}|:{}{}消息 => {} -> {}", context.getId(), context.getUuid(), message.getDirection().getDesc(), getSupportedType().getName(), message.getFromUser(), message.getToUser());
         }
     }
 

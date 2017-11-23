@@ -1,16 +1,16 @@
 package me.nielcho.wechat.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 @Data
 public class BaseRequest {
-    @JsonProperty("Uin")
+    @JSONField(name = "Uin")
     private Long Uin;
-    @JsonProperty("Sid")
+    @JSONField(name = "Sid")
     private String Sid;
-    @JsonProperty("Skey")
+    @JSONField(name = "Skey")
     private String Skey;
-    @JsonProperty("DeviceID")
+    @JSONField(name = "DeviceID")
     private String DeviceID;
 }

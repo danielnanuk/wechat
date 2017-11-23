@@ -1,18 +1,18 @@
 package me.nielcho.wechat.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 @Data
 public class StatusReportRequest  {
-    @JsonProperty("BaseRequest")
+    @JSONField(name = "BaseRequest")
     private BaseRequest baseRequest;
-    @JsonProperty("ClientMsgId")
+    @JSONField(name = "ClientMsgId")
     private long clientMsgId;
-    @JsonProperty("Code")
+    @JSONField(name = "Code")
     private int code;
-    @JsonProperty("FromUserName")
+    @JSONField(name = "FromUserName")
     private String fromUserName;
-    @JsonProperty("ToUserName")
+    @JSONField(name = "ToUserName")
     private String toUserName;
 }

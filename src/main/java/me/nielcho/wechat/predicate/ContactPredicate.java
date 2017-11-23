@@ -7,15 +7,20 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * 过滤公众号以及一些特殊账号
+ * Created by drjr on 17-11-23.
  */
 public class ContactPredicate implements Predicate<GetContactResponse> {
 
     private static final List<String> ACCEPTED_SPECIAL_USERNAME = Collections.singletonList("filehelper");
     private static final String GROUP_CONTACT_PREFIX = "@@";
 
+    private static final ContactPredicate INSTANCE = new ContactPredicate();
     public static boolean isGroupContact(String username) {
         return username != null && username.startsWith(GROUP_CONTACT_PREFIX);
+    }
+
+    public static ContactPredicate getInstance() {
+        return INSTANCE;
     }
 
     @Override

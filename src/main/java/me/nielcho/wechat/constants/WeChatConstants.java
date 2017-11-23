@@ -1,14 +1,21 @@
 package me.nielcho.wechat.constants;
 
+import java.util.regex.Pattern;
 
-import me.nielcho.wechat.domain.WeChatMessage;
-
+/**
+ * Created by drjr on 17-11-23.
+ */
 public class WeChatConstants {
 
-    public static final String WX_FILEHELPER = "filehelper";
-    public static final String WX_FORCE_LOGIN_KEY = "WECHAT_FORCE_LOGIN";
+    public static final int SESSION_STATE_LOGGING = 1;
+    public static final int SESSION_STATE_LOGINED = 2;
 
-    public static final String WX_SWITCH_CODE = "/loanbusiness/ics/wechat-enable";
+    public static final Pattern UUID_PATTERN = Pattern.compile("window.QRLogin.code = (\\d+); window.QRLogin.uuid = \"(\\S+?)\"");
+    public static final Pattern SYNC_CHECK_PATTERN = Pattern.compile("window.synccheck=\\{retcode:\"(\\d+)\",selector:\"(\\d+)\"}");
+    public static final Pattern LOGIN_CODE_PATTERN = Pattern.compile("window.code=(\\d+);");
+    public static final Pattern LOGIN_REDIRECT_PATTERN = Pattern.compile("window.redirect_uri=\"(\\S+?)\"");
+    private static final Pattern USER_AVATAR_PATTERN = Pattern.compile("window.userAvatar = '(\\S+?)'");
+    public static final String WX_FILEHELPER = "filehelper";
 
     public static final String WX_GET_GROUP_ICON = "/cgi-bin/mmwebwx-bin/webwxgetheadimg";
     public static final String WX_GET_ICON = "/cgi-bin/mmwebwx-bin/webwxgeticon";
@@ -20,35 +27,9 @@ public class WeChatConstants {
     public static final String DEFAULT_REDIRECT_URI = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage";
 
 
-    public static String CONTEXT_PREFIX = "wechat-session:";
-    public static String MESSAGE_PREFIX = "wechat-message:";
-    // 微信最近联系人列表的key前缀
-
-
-    public static final int DIRECTION_UP = 1;
-    public static final int DIRECTION_DOWN = 2;
-
-    public static final String RK_UNREAD_MSG_PREFIX = "wechat-unread:";
-    public static final String RK_CHAT_SET_PREFIX = "wechat-chatset:";
-    public static final String RK_CONTACT_PREFIX = "wechat-contact:";
-    public static final String RK_CONTACT_LIST_PREFIX = "wechat-contact-list:";
-    public static final String RK_GROUP_MEMBER_PREFIX = "wechat-group-member:";
-    public static final String RK_AID_USERNAME_PREFIX = "wechat-aid-username:";
-    public static final String RK_UPDATED_CONTACT_PREFIX = "wechat-updated-contact:";
-    public static final String RK_DELETED_CONTACT_PREFIX = "wechat-deleted-contact:";
-    public static final String RK_INIT_CONTACT_PREFIX = "wechat-init-contact:";
-    public static final String RK_GROUP_LIST_PREFIX = "wechat-group-list:";
-    public static final String RK_GROUP_MEMBER_LIST_PREFIX = "wechat-group-member-list:";
-    public static final String RK_SESSION_ID_LIST = "wechat-session-id-list";
-    public static final String RK_COUPON_INFO_PREFIX = "wechat-coupon-info:";
-
     public static final String SEND_FILE_APPID = "wxeb7ec651dd0aefa9";
     public static final String WEB_WX_APPID = "wx782c26e4c19acffb";
     public static final String LANG = "zh_CN";
-
-    public static final String CONTEXT_STATE_CLOSED = "closed";
-    public static final String CONTEXT_STATE_LOGINING = "logining";
-    public static final String CONTEXT_STATE_LOGINED = "logined";
 
     public static final String SCANNED = "0";
     public static final String NOT_SCANNED = "1";
@@ -93,10 +74,6 @@ public class WeChatConstants {
 
     public static final String WX_STAT_REPORT = "/cgi-bin/mmwebwx-bin/webwxstatreport?fun=new&pass_ticket=%s";
 
-    public enum MessageDirection {
-        RECEIVE, SEND
-    }
-
     public enum MessageType {
         TEXT(1, 0, 0, "文本"),
         IMAGE(3, 0, 0, "图片"),
@@ -126,19 +103,6 @@ public class WeChatConstants {
             return this.msgType == msgType && this.subMsgType == subMsgType && this.appMsgType == appMsgType;
         }
 
-        public boolean match(WeChatMessage message) {
-            return match(message.getMsgType(), message.getSubMsgType(), message.getAppMsgType());
-        }
-
-
-        public WeChatMessage newMessage() {
-            WeChatMessage weChatMessage = new WeChatMessage();
-            weChatMessage.setAppMsgType(appMsgType);
-            weChatMessage.setMsgType(msgType);
-            weChatMessage.setSubMsgType(subMsgType);
-            return weChatMessage;
-        }
-
         public static MessageType getMessageType(int msgType, int subMsgType, int appMsgType) {
             for (MessageType messageType : MessageType.values()) {
                 if (messageType.match(msgType, subMsgType, appMsgType)) {
@@ -162,6 +126,20 @@ public class WeChatConstants {
 
         public String getName() {
             return name;
+        }
+    }
+
+    public enum MessageDirection {
+        SEND("发送"), RECEIVE("收到");
+
+        private String desc;
+
+        MessageDirection(String desc) {
+            this.desc = desc;
+        }
+
+        public String getDesc() {
+            return desc;
         }
     }
 }

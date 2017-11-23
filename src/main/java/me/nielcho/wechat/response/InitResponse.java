@@ -18,5 +18,5 @@ public class InitResponse extends BaseWxResponse {
 //    String SKey;
     SyncKey SyncKey;
 //    Long SystemTime;
-    WeChatUserResponse User;
+    UserResponse User;
 }

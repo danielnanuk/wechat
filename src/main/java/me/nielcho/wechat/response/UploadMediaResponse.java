@@ -1,6 +1,6 @@
 package me.nielcho.wechat.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.ToString;
 
@@ -8,12 +8,12 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class UploadMediaResponse extends BaseWxResponse {
  
-    @JsonProperty("MediaId")
+    @JSONField(name = "MediaId")
     String MediaId;
-    @JsonProperty("StartPos")
+    @JSONField(name = "StartPos")
     int StartPos;
-    @JsonProperty("CDNThumbImgHeight")
+    @JSONField(name = "CDNThumbImgHeight")
     int CDNThumbImgHeight;
-    @JsonProperty("CDNThumbImgWidth")
+    @JSONField(name = "CDNThumbImgWidth")
     int CDNThumbImgWidth;
 }

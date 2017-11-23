@@ -1,13 +1,13 @@
 package me.nielcho.wechat.request;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 @Data
 public class VerifyUserRequest {
-    @JsonProperty("Value")
+    @JSONField(name = "Value")
     String Value;
-    @JsonProperty("VerifyUserTicket")
+    @JSONField(name = "VerifyUserTicket")
     String VerifyUserTicket = "";
 }

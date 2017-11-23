@@ -1,15 +1,15 @@
 package me.nielcho.wechat.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.ToString;
 
 @Data
 @ToString(callSuper = true)
 public class SendMessageResponse extends BaseWxResponse {
-    @JsonProperty("LocalID")
+    @JSONField(name = "LocalID")
     String LocalID;
-    @JsonProperty("MsgID")
+    @JSONField(name = "MsgID")
     String MsgID;
     Long createTime;
     String fileName;

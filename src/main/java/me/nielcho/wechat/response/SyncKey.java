@@ -1,14 +1,14 @@
 package me.nielcho.wechat.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 public class SyncKey {
-    @JsonProperty("Count")
+    @JSONField(name = "Count")
     int Count;
-    @JsonProperty("List")
+    @JSONField(name = "List")
     List<SyncKeyPair> List;
 }

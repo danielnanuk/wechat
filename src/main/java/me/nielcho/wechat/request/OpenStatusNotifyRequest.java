@@ -1,19 +1,19 @@
 package me.nielcho.wechat.request;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 @Data
 public class OpenStatusNotifyRequest {
-    @JsonProperty("BaseRequest")
+    @JSONField(name = "BaseRequest")
     BaseRequest BaseRequest;
-    @JsonProperty("Code")
+    @JSONField(name = "Code")
     int Code;
-    @JsonProperty("FromUserName")
+    @JSONField(name = "FromUserName")
     String FromUserName;
-    @JsonProperty("ToUserName")
+    @JSONField(name = "ToUserName")
     String ToUserName;
-    @JsonProperty("ClientMsgId")
+    @JSONField(name = "ClientMsgId")
     long ClientMsgId;
 }

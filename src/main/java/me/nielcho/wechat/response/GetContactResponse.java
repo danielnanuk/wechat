@@ -1,6 +1,6 @@
 package me.nielcho.wechat.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.List;
@@ -8,66 +8,66 @@ import java.util.List;
 @Data
 public class GetContactResponse {
 
-//    @JsonProperty("Alias")
+//    @JSONField(name = "Alias")
 //    private String Alias;
-//    @JsonProperty("AppAccountFlag")
+//    @JSONField(name = "AppAccountFlag")
 //    private int AppAccountFlag;
-//    @JsonProperty("AttrStatus")
+//    @JSONField(name = "AttrStatus")
 //    private long AttrStatus;
-//    @JsonProperty("ChatRoomId")
+//    @JSONField(name = "ChatRoomId")
 //    private int ChatRoomId;
-    @JsonProperty("City")
+    @JSONField(name = "City")
     private String City;
-//    @JsonProperty("ContactFlag")
+//    @JSONField(name = "ContactFlag")
 //    private int ContactFlag;
-//    @JsonProperty("DisplayName")
+//    @JSONField(name = "DisplayName")
 //    private String DisplayName;
-    @JsonProperty("EncryChatRoomId")
+    @JSONField(name = "EncryChatRoomId")
     private String EncryChatRoomId;
-    @JsonProperty("HeadImgUrl")
+    @JSONField(name = "HeadImgUrl")
     private String HeadImgUrl;
-//    @JsonProperty("HideInputBarFlag")
+//    @JSONField(name = "HideInputBarFlag")
 //    private int HideInputBarFlag;
-//    @JsonProperty("IsOwner")
+//    @JSONField(name = "IsOwner")
 //    private int IsOwner;
-//    @JsonProperty("KeyWord")
+//    @JSONField(name = "KeyWord")
 //    private String KeyWord;
-    @JsonProperty("MemberCount")
+    @JSONField(name = "MemberCount")
     private int MemberCount;
-    @JsonProperty("MemberList")
+    @JSONField(name = "MemberList")
     private List<Member> MemberList;
-    @JsonProperty("NickName")
+    @JSONField(name = "NickName")
     private String NickName;
-//    @JsonProperty("OwnerUin")
+//    @JSONField(name = "OwnerUin")
 //    private int OwnerUin;
-    @JsonProperty("PYInitial")
+    @JSONField(name = "PYInitial")
     private String PYInitial;
-//    @JsonProperty("PYQuanPin")
+//    @JSONField(name = "PYQuanPin")
 //    private String PYQuanPin;
-//    @JsonProperty("Province")
+//    @JSONField(name = "Province")
 //    private String Province;
-    @JsonProperty("RemarkName")
+    @JSONField(name = "RemarkName")
     private String RemarkName;
-    @JsonProperty("RemarkPYInitial")
+    @JSONField(name = "RemarkPYInitial")
     private String RemarkPYInitial;
-//    @JsonProperty("RemarkPYQuanPin")
+//    @JSONField(name = "RemarkPYQuanPin")
 //    private String RemarkPYQuanPin;
-    @JsonProperty("Sex")
+    @JSONField(name = "Sex")
     private int Sex;
-    @JsonProperty("Signature")
+    @JSONField(name = "Signature")
     private String Signature;
-//    @JsonProperty("SnsFlag")
+//    @JSONField(name = "SnsFlag")
 //    private int SnsFlag;
-//    @JsonProperty("StarFriend")
+//    @JSONField(name = "StarFriend")
 //    private int StarFriend;
-//    @JsonProperty("Statues")
+//    @JSONField(name = "Statues")
 //    private int Statues;
-//    @JsonProperty("Uin")
+//    @JSONField(name = "Uin")
 //    private int Uin;
-//    @JsonProperty("UniFriend")
+//    @JSONField(name = "UniFriend")
 //    private int UniFriend;
-    @JsonProperty("UserName")
+    @JSONField(name = "UserName")
     private String UserName;
-    @JsonProperty("VerifyFlag")
+    @JSONField(name = "VerifyFlag")
     private int VerifyFlag;
 }

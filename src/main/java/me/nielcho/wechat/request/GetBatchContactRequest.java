@@ -1,16 +1,16 @@
 package me.nielcho.wechat.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 public class GetBatchContactRequest {
-    @JSONField(name ="BaseRequest")
+    @JSONField(name = "BaseRequest")
     BaseRequest BaseRequest;
-    @JSONField(name ="Count")
+    @JSONField(name = "Count")
     int Count;
-    @JSONField(name ="List")
+    @JSONField(name = "List")
     List<GetBatchUserName> List;
 }
