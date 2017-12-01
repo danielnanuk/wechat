@@ -1,7 +1,6 @@
 package me.nielcho.wechat.util;
 
 
-import org.apache.commons.collections.MapUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;

@@ -11,9 +11,7 @@ import me.nielcho.wechat.util.OkHttp;
 import me.nielcho.wechat.util.WeChatRequests;
 import okhttp3.Request;
 import okhttp3.Response;
-import oracle.jrockit.jfr.StringConstantPool;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +19,6 @@ import me.nielcho.wechat.response.*;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class WeChatService {
@@ -100,7 +97,8 @@ public class WeChatService {
         SetRemarkResponse response = OkHttp.doRequest(request, SetRemarkResponse.class, null);
         log.info("[x] |{}| 设置备注返回 -> {}", context.getId(), response);
         if (BaseWxResponse.isSuccess(response)) {
-
+            previous.setRemarkName(remarkName);
+            contactRepository.addContacts(context.getUin(), Collections.singletonList(previous));
         }
         return response;
     }

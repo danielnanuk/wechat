@@ -227,42 +227,25 @@ public class WeChatSession implements Runnable {
         info("初始化联系人");
         long startAt = System.currentTimeMillis();
         List<ContactInfo> contactsInfo = new ArrayList<>();
-        List<String> groupUserNames = new ArrayList<>();
         AtomicLong seq = new AtomicLong(0L);
         AtomicBoolean continueFlag = new AtomicBoolean(true);
-        AtomicBoolean errorFlag = new AtomicBoolean(false);
         do {
             Request request = WeChatRequests.getContactRequest(context, seq.get());
             GetMemberContactResponse getBatchContactResponse = OkHttp.doRequest(request, GetMemberContactResponse.class, cookieConsumer);
-
             int ret = getBatchContactResponse.getBaseResponse().getRet();
-            if (ret == 1102 || ret == 1100 || ret == 1101) {
-                errorFlag.set(true);
-                return;
-            }
-            if (ret == 1205) {
-                continueFlag.set(false);
+            if (ret != 0) {
                 return;
             }
             List<GetContactResponse> memberList = getBatchContactResponse.getMemberList();
             memberList.stream()
                     .filter(ContactPredicate.getInstance())
-                    .forEach(contact -> {
-                        ContactInfo contactInfo = ContactInfo.fromGetContactResponse(context, contact);
-                        if (ContactPredicate.isGroupContact(contactInfo.getUsername())) {
-                            groupUserNames.add(contactInfo.getUsername());
-                        }
-                        contactsInfo.add(contactInfo);
-                    });
+                    .forEach(contact -> contactsInfo.add(ContactInfo.fromGetContactResponse(context, contact)));
             continueFlag.set(memberList.size() > 0 && getBatchContactResponse.getSeq() != 0);
             seq.set(getBatchContactResponse.getSeq());
-        } while (continueFlag.get() && !errorFlag.get());
-        if (errorFlag.get()) {
-            return;
-        }
+        } while (continueFlag.get());
         contactRepository.addContacts(context.getUin(), contactsInfo);
         long endAt = System.currentTimeMillis();
-        info("初始化联系人耗时: {}ms", endAt - startAt);
+        info("初始化联系人耗时: {} ms", endAt - startAt);
     }
 
 

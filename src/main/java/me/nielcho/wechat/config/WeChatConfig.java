@@ -1,8 +1,6 @@
 package me.nielcho.wechat.config;
 
-import me.nielcho.wechat.handler.*;
 import me.nielcho.wechat.manager.WeChatManager;
-import me.nielcho.wechat.repository.ContactRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;

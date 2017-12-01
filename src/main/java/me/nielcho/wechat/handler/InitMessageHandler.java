@@ -4,9 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import me.nielcho.wechat.constants.WeChatConstants;
 import me.nielcho.wechat.context.WeChatContext;
 import me.nielcho.wechat.domain.ContactInfo;
-import me.nielcho.wechat.repository.ContactRepository;
 import me.nielcho.wechat.response.MessageResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component

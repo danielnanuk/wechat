@@ -23,7 +23,6 @@ public class LocationMessageHandler extends MessageHandler {
         weChatMessage.setTitle(arr[0]);
         weChatMessage.setThumbnail(arr[1]);
         weChatMessage.setUrl(message.getUrl());
-        weChatMessage.getDirection();
 
     }
 }
