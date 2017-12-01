@@ -3,20 +3,15 @@ package me.nielcho.wechat.repository;
 import me.nielcho.wechat.domain.ContactInfo;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class ContactRepository {
-    Map<String, Map<String, ContactInfo>> contactMap = new HashMap<>();
+    private Map<String, Map<String, ContactInfo>> contactMap = new HashMap<>();
 
     public void addContacts(String uin, Collection<ContactInfo> contacts) {
-        contactMap.computeIfAbsent(uin, (key) -> {
-            Map<String, ContactInfo> contactInfoMap = new HashMap<>();
-            contacts.forEach(contact -> contactInfoMap.put(contact.getUsername(), contact));
-            return contactInfoMap;
-        });
+        Map<String, ContactInfo> contactInfoMap = contactMap.computeIfAbsent(uin, (key) -> new HashMap<>());
+        contacts.forEach(contact -> contactInfoMap.put(contact.getUsername(), contact));
     }
 
     public ContactInfo getContact(String uin, String username) {
@@ -26,5 +21,7 @@ public class ContactRepository {
         return null;
     }
 
-
+    public List<ContactInfo> getAllContact(String uin) {
+        return new ArrayList<>(contactMap.get(uin).values());
+    }
 }

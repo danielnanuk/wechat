@@ -7,6 +7,7 @@ import me.nielcho.wechat.domain.ContactInfo;
 import me.nielcho.wechat.domain.WeChatMessage;
 import me.nielcho.wechat.repository.ContactRepository;
 import me.nielcho.wechat.response.MessageResponse;
+import me.nielcho.wechat.service.WeChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,8 @@ public abstract class MessageHandler {
     @Autowired
     protected ContactRepository contactRepository;
 
+    @Autowired
+    private WeChatService weChatService;
     public abstract WeChatConstants.MessageType getSupportedType();
 
     public void handleInternal(WeChatContext context, MessageResponse message, WeChatMessage weChatMessage) {
@@ -44,13 +47,13 @@ public abstract class MessageHandler {
         WeChatMessage weChatMessage = new WeChatMessage();
         setBasicInfo(response, weChatMessage);
         String toUserName = response.getToUserName();
-        ContactInfo toUser = contactRepository.getContact(context.getUin(), toUserName);
+        ContactInfo toUser = weChatService.getContactInfo(context, toUserName, true);
         if (toUser == null) {
             log.info("[*] |{}|{}|:发送公众号消息:{}", context.getId(), context.getUuid(), response);
             return null;
         }
         String fromUserName = response.getFromUserName();
-        ContactInfo fromUser = contactRepository.getContact(context.getUin(), fromUserName);
+        ContactInfo fromUser = weChatService.getContactInfo(context, fromUserName, true);
         if (fromUser == null) {
             log.info("[*] |{}|{}|:收到公众号消息:{}", context.getId(), context.getUuid(), response);
             return null;
@@ -66,7 +69,7 @@ public abstract class MessageHandler {
             if (weChatMessage.getMsgType() != WeChatConstants.MessageType.SYSTEM.getMsgType() && colonIndex > 0) {
                 String fromGroupUserUserName = rawContent.substring(0, colonIndex).trim();
                 ContactInfo fromGroup = fromUser;
-                fromUser = contactRepository.getContact(context.getUin(), fromGroupUserUserName);
+                fromUser =  weChatService.getContactInfo(context, fromGroupUserUserName, true);
                 weChatMessage.setContent(rawContent.substring(colonIndex + 6));
                 weChatMessage.setFromGroupUserName(fromGroup.getUsername());
                 weChatMessage.setFromGroup(fromGroup.getNickname());

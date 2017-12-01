@@ -8,6 +8,7 @@ import me.nielcho.wechat.response.GetContactResponse;
 import me.nielcho.wechat.response.Member;
 import me.nielcho.wechat.response.ModContact;
 import me.nielcho.wechat.util.WeChatUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.beans.Transient;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Data
 public class ContactInfo {
@@ -33,10 +35,6 @@ public class ContactInfo {
         return ContactPredicate.isGroupContact(username);
     }
 
-    @Transient
-    public String getVid() {
-        return nickname + "#" + (StringUtils.isEmpty(remarkName) ? "" : remarkName);
-    }
     private static void processEmptySkey(String skey, ContactInfo contactInfo) {
         String icon = contactInfo.getIcon();
         Map<String, String> queryString = WeChatUtil.getQueryString(icon);
@@ -46,23 +44,11 @@ public class ContactInfo {
     }
 
     private static void processGroup(ContactInfo contactInfo, List<Member> members) {
+        if (CollectionUtils.isEmpty(members)) return;
         boolean isGroup = ContactPredicate.isGroupContact(contactInfo.getUsername());
         if (isGroup) {
-            String nickName = contactInfo.getNickname();
-            if (StringUtils.isEmpty(nickName)) {
-                StringBuilder nickNameBuilder = new StringBuilder();
-                int memberCount = members.size();
-                for (int i = 0; i < memberCount; i++) {
-                    Member member = members.get(i);
-                    nickNameBuilder.append(member.getNickName()).append("、");
-                    if (i == members.size() -1) {
-                        contactInfo.setNickname(nickNameBuilder.substring(0, nickNameBuilder.length() - 1));
-                    }
-                    if (nickNameBuilder.length() > 20) {
-                        contactInfo.setNickname(nickNameBuilder.substring(0, nickNameBuilder.length() - 1) + "...");
-                        break;
-                    }
-                }
+            if (StringUtils.isEmpty(contactInfo.getNickname())) {
+                contactInfo.setNickname(members.stream().map(Member::getNickName).collect(Collectors.joining("、")));
             }
         }
     }
@@ -76,7 +62,13 @@ public class ContactInfo {
         contactInfo.setIcon(getContactResponse.getHeadImgUrl());
         contactInfo.setPyInitial(getContactResponse.getPYInitial());
         contactInfo.setRemarkPyInitial(getContactResponse.getRemarkPYInitial());
+        if (CollectionUtils.isNotEmpty(getContactResponse.getMemberList())) {
+            List<ContactInfo> members = getContactResponse.getMemberList().stream().map(member -> fromMemberResponse(context, getContactResponse, member)).collect(Collectors.toList());
+            contactInfo.setMembers(members);
+        }
         processEmptySkey(context.getSkey(), contactInfo);
+
+
         processGroup(contactInfo, getContactResponse.getMemberList());
         return contactInfo;
     }
@@ -98,6 +90,7 @@ public class ContactInfo {
         contactInfo.setNickname(member.getNickName());
         contactInfo.setPyInitial(member.getPYInitial());
         contactInfo.setRemarkPyInitial(member.getRemarkPYInitial());
+        contactInfo.setChatroomId(getContactResponse.getEncryChatRoomId());
         String encryChatRoomId = getContactResponse.getEncryChatRoomId();
         Map<String, Object> params = new HashMap<>();
         params.put("seq", 0);
@@ -109,6 +102,7 @@ public class ContactInfo {
         processGroup(contactInfo, getContactResponse.getMemberList());
         return contactInfo;
     }
+
     @Override
     public boolean equals(Object object) {
         if (object == null) return false;

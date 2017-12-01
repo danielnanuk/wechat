@@ -9,6 +9,7 @@ import me.nielcho.wechat.repository.ContactRepository;
 import me.nielcho.wechat.request.BaseRequest;
 import me.nielcho.wechat.response.*;
 import me.nielcho.wechat.handler.*;
+import me.nielcho.wechat.service.WeChatService;
 import me.nielcho.wechat.util.OkHttp;
 import me.nielcho.wechat.util.WeChatRequests;
 import me.nielcho.wechat.util.WeChatUtil;
@@ -56,6 +57,9 @@ public class WeChatSession implements Runnable {
     @Autowired
     private ContactRepository contactRepository;
 
+    @Autowired
+    private WeChatService weChatService;
+
     @Resource
     private List<MessageHandler> messageHandlers;
 
@@ -64,6 +68,10 @@ public class WeChatSession implements Runnable {
     public WeChatSession(String id) {
         this.id = id;
         context.setId(id);
+    }
+
+    public WeChatContext getContext() {
+        return context;
     }
 
     @PostConstruct
@@ -224,11 +232,11 @@ public class WeChatSession implements Runnable {
     }
 
     private void initContact() {
-        info("初始化联系人");
         long startAt = System.currentTimeMillis();
         List<ContactInfo> contactsInfo = new ArrayList<>();
         AtomicLong seq = new AtomicLong(0L);
         AtomicBoolean continueFlag = new AtomicBoolean(true);
+        List<String> groupUserNames = new ArrayList<>();
         do {
             Request request = WeChatRequests.getContactRequest(context, seq.get());
             GetMemberContactResponse getBatchContactResponse = OkHttp.doRequest(request, GetMemberContactResponse.class, cookieConsumer);
@@ -239,11 +247,17 @@ public class WeChatSession implements Runnable {
             List<GetContactResponse> memberList = getBatchContactResponse.getMemberList();
             memberList.stream()
                     .filter(ContactPredicate.getInstance())
-                    .forEach(contact -> contactsInfo.add(ContactInfo.fromGetContactResponse(context, contact)));
+                    .forEach(contact -> {
+                        if (ContactPredicate.isGroupContact(contact.getUserName())) {
+                            groupUserNames.add(contact.getUserName());
+                        }
+                        contactsInfo.add(ContactInfo.fromGetContactResponse(context, contact));
+                    });
             continueFlag.set(memberList.size() > 0 && getBatchContactResponse.getSeq() != 0);
             seq.set(getBatchContactResponse.getSeq());
         } while (continueFlag.get());
         contactRepository.addContacts(context.getUin(), contactsInfo);
+        weChatService.getBatchContact(context, groupUserNames);
         long endAt = System.currentTimeMillis();
         info("初始化联系人耗时: {} ms", endAt - startAt);
     }

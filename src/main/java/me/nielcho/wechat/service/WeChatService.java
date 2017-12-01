@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import me.nielcho.wechat.constants.WeChatConstants;
 import me.nielcho.wechat.context.WeChatContext;
 import me.nielcho.wechat.domain.ContactInfo;
-import me.nielcho.wechat.domain.WeChatMessage;
 import me.nielcho.wechat.predicate.ContactPredicate;
 import me.nielcho.wechat.repository.ContactRepository;
 import me.nielcho.wechat.util.OkHttp;
@@ -13,6 +12,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import me.nielcho.wechat.response.*;
@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Slf4j
+@Service
 public class WeChatService {
 
     @Autowired
@@ -148,16 +149,6 @@ public class WeChatService {
         return "doc";
     }
 
-    private void setMediaInfo(SendMessageResponse response, MultipartFile file, String mediaId, WeChatMessage message) {
-        String fileName = file.getOriginalFilename();
-        long fileSize = file.getSize();
-        message.setMediaId(mediaId);
-        message.setFileName(fileName);
-        message.setFileSize(fileSize);
-        response.setFileName(fileName);
-        response.setFileSize(fileSize);
-    }
-
     private SendMessageResponse sendImage(WeChatContext context, MultipartFile file, String mediaId, String to) {
         return OkHttp.doRequest(WeChatRequests.sendImageRequest(context, to, mediaId), SendMessageResponse.class, null);
     }
@@ -198,5 +189,9 @@ public class WeChatService {
         Request request = WeChatRequests.addContactRequest(context, username, content);
         BaseWxResponse response = OkHttp.doRequest(request, BaseWxResponse.class, null);
         return response.getBaseResponse();
+    }
+
+    public List<ContactInfo> getAllContacts(WeChatContext context) {
+        return contactRepository.getAllContact(context.getUin());
     }
 }

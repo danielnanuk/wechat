@@ -34,5 +34,5 @@ public class WeChatContext {
     private UserResponse user;
     private SyncKey syncKey;
     private int state;
-    private AtomicInteger mediaCount;
+    private AtomicInteger mediaCount = new AtomicInteger(0);
 }
