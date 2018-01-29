@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 @Slf4j
 public class OkHttp {
 
-    private static OkHttpClient client = new OkHttpClient.Builder()
+    private static final OkHttpClient client = new OkHttpClient.Builder()
             .connectionPool(new ConnectionPool(100, 60, TimeUnit.SECONDS))
             .connectTimeout(5, TimeUnit.SECONDS)
             .writeTimeout(5, TimeUnit.SECONDS)

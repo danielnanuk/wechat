@@ -15,7 +15,6 @@ public class EmotionMessageHandler extends MessageHandler {
 
     private static final Pattern CDN_URL_PATTERN = Pattern.compile("cdnurl\\s*=\\s*\"(\\S+?)\"");
 
-
     @Override
     public WeChatConstants.MessageType getSupportedType() {
         return WeChatConstants.MessageType.EMOTION;

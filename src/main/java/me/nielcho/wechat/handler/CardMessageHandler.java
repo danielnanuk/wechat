@@ -20,7 +20,6 @@ public class CardMessageHandler extends MessageHandler {
 
     private static final Pattern HEAD_IMG_PATTERN = Pattern.compile("smallheadimgurl=\"(\\S+?)\"");
     private static final Pattern WX_NO_PATTERN = Pattern.compile("username=\"(\\S+?)\"");
-    private static final Pattern NICKNAME_PATTERN = Pattern.compile("nickname=\"(\\S+?)\"");
     @Override
     public WeChatConstants.MessageType getSupportedType() {
         return WeChatConstants.MessageType.CARD;

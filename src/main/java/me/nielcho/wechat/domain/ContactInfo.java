@@ -84,7 +84,7 @@ public class ContactInfo {
         return contactInfo;
     }
 
-    public static ContactInfo fromMemberResponse(WeChatContext context, GetContactResponse getContactResponse, Member member) {
+    private static ContactInfo fromMemberResponse(WeChatContext context, GetContactResponse getContactResponse, Member member) {
         ContactInfo contactInfo = new ContactInfo();
         contactInfo.setUsername(member.getUserName());
         contactInfo.setNickname(member.getNickName());

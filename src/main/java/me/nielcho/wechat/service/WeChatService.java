@@ -32,8 +32,7 @@ public class WeChatService {
      */
     public SendMessageResponse sendTextMessage(WeChatContext context, String to, String content) {
         Request request = WeChatRequests.sendTextRequest(context, to, content);
-        SendMessageResponse sendMessageResponse = OkHttp.doRequest(request, SendMessageResponse.class, null);
-        return sendMessageResponse;
+        return OkHttp.doRequest(request, SendMessageResponse.class, null);
     }
 
     public SendMessageResponse sendMedia(WeChatContext context, MultipartFile file, String to) throws IOException {
@@ -46,7 +45,7 @@ public class WeChatService {
     }
 
 
-    public ContactInfo getContactInfo(WeChatContext context, String username, boolean remote) {
+    public ContactInfo getContactInfo(WeChatContext context, String username) {
         ContactInfo contact = contactRepository.getContact(context.getUin(), username);
         if (contact == null) {
             List<String> userNames = new ArrayList<>(1);
@@ -92,7 +91,7 @@ public class WeChatService {
     }
 
     public SetRemarkResponse setRemarkName(WeChatContext context, String to, String remarkName) {
-        ContactInfo previous = getContactInfo(context, to, true);
+        ContactInfo previous = getContactInfo(context, to);
         Request request = WeChatRequests.setRemarkRequest(context, to, remarkName);
         log.info("[x] |{}| 设置备注 -> to:{}, remarkName:{}", context.getId(), to, remarkName);
         SetRemarkResponse response = OkHttp.doRequest(request, SetRemarkResponse.class, null);

@@ -29,7 +29,7 @@ public class WeChatUtil {
         return "e" + builder.toString();
     }
 
-    public static String getRandomNumber(int length) {
+    private static String getRandomNumber(int length) {
         StringBuilder builder = new StringBuilder();
         int i = 0;
         Random random = new Random();
@@ -49,14 +49,14 @@ public class WeChatUtil {
     /**
      * 生成本地媒体ID
      */
-    public static long generateClientMediaId() {
+    static long generateClientMediaId() {
         return (System.currentTimeMillis() / 1000) * 1000 + new Random().nextInt(10000);
     }
 
     /**
      * 获取文件后缀名
      */
-    public static String getFileExt(String filename) {
+    static String getFileExt(String filename) {
         int dotIndex = filename.lastIndexOf('.');
         return dotIndex > 0 ? filename.substring(dotIndex) : "";
     }
@@ -94,7 +94,7 @@ public class WeChatUtil {
         return result;
     }
 
-    public static String format(String url, Object... pathVariables) {
+    static String format(String url, Object... pathVariables) {
         Object[] params = new Object[pathVariables.length];
         for (int i = 0; i < params.length; i++) {
             try {
@@ -120,7 +120,7 @@ public class WeChatUtil {
     }
 
 
-    public static long invertLong(long n) {
+    static long invertLong(long n) {
         return ((~(int)(n >> 8)) << 8) & ~(int)(n);
     }
 }

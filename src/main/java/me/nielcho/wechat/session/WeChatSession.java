@@ -39,8 +39,6 @@ import static me.nielcho.wechat.util.WeChatUtil.match;
 @Slf4j
 public class WeChatSession implements Runnable {
 
-    private static final MediaType JSON_TYPE = MediaType.parse("application/json; charset=utf-8");
-    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36";
     private final String id;
     private final WeChatContext context = new WeChatContext();
     private Consumer<Map<String, String>> cookieConsumer = (m) -> context.getCookies().putAll(m);

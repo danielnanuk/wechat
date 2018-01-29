@@ -47,13 +47,13 @@ public abstract class MessageHandler {
         WeChatMessage weChatMessage = new WeChatMessage();
         setBasicInfo(response, weChatMessage);
         String toUserName = response.getToUserName();
-        ContactInfo toUser = weChatService.getContactInfo(context, toUserName, true);
+        ContactInfo toUser = weChatService.getContactInfo(context, toUserName);
         if (toUser == null) {
             log.info("[*] |{}|{}|:发送公众号消息:{}", context.getId(), context.getUuid(), response);
             return null;
         }
         String fromUserName = response.getFromUserName();
-        ContactInfo fromUser = weChatService.getContactInfo(context, fromUserName, true);
+        ContactInfo fromUser = weChatService.getContactInfo(context, fromUserName);
         if (fromUser == null) {
             log.info("[*] |{}|{}|:收到公众号消息:{}", context.getId(), context.getUuid(), response);
             return null;
@@ -69,7 +69,7 @@ public abstract class MessageHandler {
             if (weChatMessage.getMsgType() != WeChatConstants.MessageType.SYSTEM.getMsgType() && colonIndex > 0) {
                 String fromGroupUserUserName = rawContent.substring(0, colonIndex).trim();
                 ContactInfo fromGroup = fromUser;
-                fromUser =  weChatService.getContactInfo(context, fromGroupUserUserName, true);
+                fromUser =  weChatService.getContactInfo(context, fromGroupUserUserName);
                 weChatMessage.setContent(rawContent.substring(colonIndex + 6));
                 weChatMessage.setFromGroupUserName(fromGroup.getUsername());
                 weChatMessage.setFromGroup(fromGroup.getNickname());
@@ -100,7 +100,7 @@ public abstract class MessageHandler {
         weChatMessage.setMediaId(response.getMediaId());
     }
 
-    protected void log(WeChatContext context, WeChatMessage message) {
+    private void log(WeChatContext context, WeChatMessage message) {
         if (message.isGroupMessage() && message.getDirection() == WeChatConstants.MessageDirection.RECEIVE) {
             log.info("[*] |{}|{}|:{}群{}消息 => {}: {}|{} -> {}", context.getId(), context.getUuid(), message.getDirection().getDesc(), getSupportedType().getName(), message.getFromGroup(), message.getFromUser(), message.getToUser());
         } else {

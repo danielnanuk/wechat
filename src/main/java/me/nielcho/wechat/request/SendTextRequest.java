@@ -5,7 +5,6 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
 @Data
-
 public class SendTextRequest {
     @JSONField(name = "BaseRequest")
     BaseRequest BaseRequest;

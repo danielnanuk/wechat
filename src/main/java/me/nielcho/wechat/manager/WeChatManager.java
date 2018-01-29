@@ -43,7 +43,6 @@ public class WeChatManager {
         } else {
             sessionMap.put(id, session);
             initializeBean(session);
-            applicationContext.getAutowireCapableBeanFactory();
             threadPoolTaskExecutor.submit(session);
             return session;
         }

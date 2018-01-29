@@ -76,7 +76,7 @@ public class WeChatController {
     @ResponseBody
     public ContactInfo getContactInfo(@RequestParam(name = "username") String username) {
         WeChatContext context = weChatManager.getContext();
-        return weChatService.getContactInfo(context, username, true);
+        return weChatService.getContactInfo(context, username);
     }
 
     @ApiOperation("设置备注名")

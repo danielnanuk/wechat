@@ -4,14 +4,16 @@ import me.nielcho.wechat.domain.ContactInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class ContactRepository {
     private Map<String, Map<String, ContactInfo>> contactMap = new HashMap<>();
 
     public void addContacts(String uin, Collection<ContactInfo> contacts) {
-        Map<String, ContactInfo> contactInfoMap = contactMap.computeIfAbsent(uin, (key) -> new HashMap<>());
-        contacts.forEach(contact -> contactInfoMap.put(contact.getUsername(), contact));
+        contactMap.computeIfAbsent(uin, (key) -> new HashMap<>())
+                .putAll(contacts.stream().collect(Collectors.toMap(ContactInfo::getUsername, Function.identity())));
     }
 
     public ContactInfo getContact(String uin, String username) {
