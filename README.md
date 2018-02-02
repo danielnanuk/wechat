@@ -7,3 +7,4 @@ visit http://localhost:8080/swagger-ui.html:
 
 ![image](https://github.com/danielnanuk/wechat/raw/master/screenshot.png)
 
+Have fun with WeChat!
