@@ -12,9 +12,7 @@ public class SendMsgRequest {
     String to;
     List<String> receivers;
     String content;
-    
-    
-    
+
     public void validate() {
         if (StringUtils.isEmpty(to) && CollectionUtils.isEmpty(receivers)) {
             throw new IllegalArgumentException("接收人为空");

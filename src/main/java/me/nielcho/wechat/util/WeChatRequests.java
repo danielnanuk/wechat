@@ -159,8 +159,7 @@ public class WeChatRequests {
                 filename,
                 file.getSize(),
                 mediaId,
-                WeChatUtil.getFileExt(filename)
-        );
+                WeChatUtil.getFileExt(filename));
         SendMediaRequest request = new SendMediaRequest();
         request.setBaseRequest(context.getBaseRequest());
         Msg msg = Msg.newFileMsg(context, to, mediaId);
@@ -268,27 +267,4 @@ public class WeChatRequests {
         return requestBuilderForWeChat(context).url(url).post(generateJSONBody(request)).build();
     }
 
-    public static Request getWeChatRequest(WeChatContext context, String url, String tag) {
-        return requestBuilderForWeChat(context).url(context.getDomain() + url).build();
-
-    }
-
-    public static Request statusReportRequests(WeChatContext context, String username, Integer code) {
-        String url = context.getDomain() + WeChatUtil.format(WX_STATUS_REPORT_URL, LANG, context.getPassTicket());
-        StatusReportRequest request = new StatusReportRequest();
-        request.setBaseRequest(context.getBaseRequest());
-        request.setClientMsgId(WeChatUtil.generateClientMediaId());
-        request.setCode(code);
-        request.setFromUserName(context.getUser().getUserName());
-        request.setToUserName(username);
-        return requestBuilderForWeChat(context).url(url).post(generateJSONBody(request)).build();
-    }
-
-    public static Request statReportRequest(WeChatContext context, List<StatReportRequest.Info> infos) {
-        String url = context.getDomain() + WeChatUtil.format(WX_STAT_REPORT, context.getPassTicket());
-        StatReportRequest request = new StatReportRequest();
-        request.setBaseRequest(context.getBaseRequest());
-        request.setList(infos);
-        return requestBuilderForWeChat(context).url(url).post(generateJSONBody(request)).build();
-    }
 }

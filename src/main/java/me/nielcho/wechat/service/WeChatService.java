@@ -1,12 +1,12 @@
 package me.nielcho.wechat.service;
 
 import lombok.extern.slf4j.Slf4j;
-import me.nielcho.wechat.constants.WeChatConstants;
 import me.nielcho.wechat.context.WeChatContext;
 import me.nielcho.wechat.domain.ContactInfo;
 import me.nielcho.wechat.predicate.ContactPredicate;
 import me.nielcho.wechat.repository.ContactRepository;
 import me.nielcho.wechat.util.OkHttp;
+import me.nielcho.wechat.util.Util;
 import me.nielcho.wechat.util.WeChatRequests;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -41,18 +41,18 @@ public class WeChatService {
             return null;
         }
         String mediaType = guessMediaType(file.getContentType());
-        return "pic".equals(mediaType) ? sendImage(context, file, mediaId, to) : sendFile(context, file, mediaId, to);
+        return "pic".equals(mediaType) ? sendImage(context, mediaId, to) : sendFile(context, file, mediaId, to);
     }
 
 
     public ContactInfo getContactInfo(WeChatContext context, String username) {
         ContactInfo contact = contactRepository.getContact(context.getUin(), username);
-        if (contact == null) {
-            List<String> userNames = new ArrayList<>(1);
-            userNames.add(username);
-            getBatchContact(context, userNames);
-        }
-        return contactRepository.getContact(context.getUin(), username);
+        return Optional.ofNullable(contact)
+                .orElseGet(() -> {
+                    List<String> userNames = new ArrayList<>(1);
+                    userNames.add(username);
+                    return Util.firstOf(getBatchContact(context, userNames));
+                });
     }
 
 
@@ -65,17 +65,18 @@ public class WeChatService {
         }
         List<ContactInfo> contacts = new ArrayList<>();
         batchContactResponse.getContactList().stream().filter(new ContactPredicate()).forEach(getContactResponse -> {
-            ContactInfo contactInfo = ContactInfo.fromGetContactResponse(context, getContactResponse);
-            // 标志当前用户是否在群内, 不在群内, 表示该群为僵尸群
-            boolean inGroup = false;
-            List<Member> memberList = getContactResponse.getMemberList();
-            for (Member member : memberList) {
-                if (Objects.equals(context.getUser().getUserName(), member.getUserName())) {
-                    inGroup = true;
-                    break;
-                }
+            if (getContactResponse.getMemberCount() > 0) {
+                log.warn("[x] |{}| possible zombie group:{}", context.getUin(), getContactResponse);
+                return;
             }
-            if (!inGroup && getContactResponse.getMemberCount() > 0) {
+
+            ContactInfo contactInfo = ContactInfo.fromGetContactResponse(context, getContactResponse);
+            List<Member> memberList = getContactResponse.getMemberList();
+
+            // 标志当前用户是否在群内, 不在群内, 表示该群为僵尸群
+            boolean inGroup = memberList.stream()
+                    .anyMatch((member) -> Objects.equals(context.getUser().getUserName(), member.getUserName()));
+            if (!inGroup) {
                 log.warn("[x] |{}| possible zombie group:{}", context.getUin(), getContactResponse);
                 return;
             }
@@ -131,16 +132,6 @@ public class WeChatService {
         OkHttp.doRequest(request, null);
     }
 
-    private void statusReport(WeChatContext context, String username) {
-        Request request = WeChatRequests.statusReportRequests(context, username, WeChatConstants.STATUS_CODE_READ);
-        try {
-            OkHttp.doGetResponse(request);
-        } catch (IOException e) {
-            log.error("[*] |{}|{}| StatusReport Failed:{}", context.getId(), context.getUuid(), username);
-        }
-    }
-
-
     private String guessMediaType(String contentType) {
         if (!StringUtils.isEmpty(contentType)) {
             return contentType.toLowerCase().startsWith("image") ? "pic" : "doc";
@@ -148,7 +139,7 @@ public class WeChatService {
         return "doc";
     }
 
-    private SendMessageResponse sendImage(WeChatContext context, MultipartFile file, String mediaId, String to) {
+    private SendMessageResponse sendImage(WeChatContext context, String mediaId, String to) {
         return OkHttp.doRequest(WeChatRequests.sendImageRequest(context, to, mediaId), SendMessageResponse.class, null);
     }
 
@@ -187,7 +178,7 @@ public class WeChatService {
     public BaseResponse addContact(WeChatContext context, String username, String content) {
         Request request = WeChatRequests.addContactRequest(context, username, content);
         BaseWxResponse response = OkHttp.doRequest(request, BaseWxResponse.class, null);
-        return response.getBaseResponse();
+        return Util.map(response, BaseWxResponse::getBaseResponse);
     }
 
     public List<ContactInfo> getAllContacts(WeChatContext context) {

@@ -184,7 +184,8 @@ public class WeChatController {
     }
 
     private void copy(HttpServletResponse response, Response weChatResponse) throws IOException {
-        response.setContentType(weChatResponse.body().contentType().toString());
+        if (weChatResponse == null || weChatResponse.body() == null) return;
+        response.setContentType(String.valueOf(weChatResponse.body().contentType()));
         weChatResponse.headers().toMultimap().forEach((k, v) -> response.setHeader(k, StringUtils.join(v, ';')));
         response.setDateHeader("Expires", System.currentTimeMillis() + 3600 * 1000 * 24 * 7);
         response.setHeader("Cache-Control", "max-age=604800");

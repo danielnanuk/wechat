@@ -8,7 +8,7 @@ public class BaseWxResponse {
     @JSONField(name = "BaseResponse")
     private BaseResponse BaseResponse;
     
-    public boolean isSuccess() {
+    private boolean isSuccess() {
         return BaseResponse != null && BaseResponse.getRet() == 0;
     }
     

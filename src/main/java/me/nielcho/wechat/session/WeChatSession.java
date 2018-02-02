@@ -13,7 +13,6 @@ import me.nielcho.wechat.service.WeChatService;
 import me.nielcho.wechat.util.OkHttp;
 import me.nielcho.wechat.util.WeChatRequests;
 import me.nielcho.wechat.util.WeChatUtil;
-import okhttp3.MediaType;
 import okhttp3.Request;
 import org.apache.commons.collections.CollectionUtils;
 import org.dom4j.Document;
@@ -44,7 +43,6 @@ public class WeChatSession implements Runnable {
     private Consumer<Map<String, String>> cookieConsumer = (m) -> context.getCookies().putAll(m);
     private volatile boolean running;
     private long sleepTime;
-
 
     @Autowired(required = false)
     private ModContactHandler modContactHandler;
